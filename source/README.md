@@ -1,0 +1,1 @@
+EDA, stat, training and source script folder
