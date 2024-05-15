@@ -1,1 +1,5 @@
 /data/FNSPID_Financial_News_Dataset
+/data/nasdaq_external_data.csv
+/data/All_external.csv
+/data/lexicon.json
+/data/merged_news.csv
