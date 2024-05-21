@@ -25,3 +25,6 @@ accelerate
 torch
 bitsandbytes
 peft
+torch==2.2.0.dev20231204
+torchaudio==2.2.0.dev20231204
+torchvision==0.17.0.dev20231204
