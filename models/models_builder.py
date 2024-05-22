@@ -1,5 +1,8 @@
 from statsmodels.tsa.arima.model import ARIMA
 import statsmodels.api as sm
+import statsmodels.formula.api as smf
+import pandas as pd
+from dateutil.relativedelta import relativedelta
 
 def asset_arima(df, asset, ar=0, i=0, ma=12, verbose=True):
     """Create the ARIMA model for the selected asset
@@ -26,12 +29,13 @@ def asset_arima(df, asset, ar=0, i=0, ma=12, verbose=True):
 
     return model, model_res
 
-def nowcaster(df, xcols, ycol, start=None, end=None, verbose=True):
-    # Select the right timeframe
-    if not start is None:
-        df = df[df.date >= start]
-    if not end is None:
-        df = df[df.date <= end]
+
+def nowcaster(df, xcols, ycol, t, tau=60, verbose=True):
+    # Get the t-time index
+    t_idx = df[df.date == t].index.values[0]
+    
+    # Get the rolling-Tau window
+    df = df.iloc[t_idx-tau:t_idx]
 
     # Get our response variable: CPI
     y = df[ycol]
@@ -41,10 +45,46 @@ def nowcaster(df, xcols, ycol, start=None, end=None, verbose=True):
     X = sm.add_constant(X)
 
     # Build nowcaster
-    nowcaster = sm.OLS(y, X)
-    nowcaster_res = nowcaster.fit()
+    nowcaster = sm.OLS(y, X).fit()
 
     if verbose:
-        print(nowcaster_res.summary())
+        print(nowcaster.summary())
 
-    return nowcaster, nowcaster_res
+    return nowcaster
+
+def forecast_ma(df, indices, t, k=1, J=12, recursive=False):
+    # Get the t-time index
+    t_idx = df[df.date == t].index.values[0]
+
+    # Recursive computation
+    if recursive:
+        # Get the rolling-J window
+        dfJ = df.iloc[t_idx-J:t_idx][indices].copy()
+
+        for i in range(k):
+            fi = dfJ.iloc[-J:].mean() 
+            fi['date'] = t + relativedelta(months=i)
+            dfJ = dfJ._append(fi, ignore_index=True)
+
+        return dfJ.iloc[-k:]
+
+    else:
+        res = []
+
+        for i in range(k):
+            # Get the rolling-J window
+            dfJ = df.iloc[t_idx+i-J:t_idx+i][indices].copy()
+            fi = dfJ.iloc[-J:].mean() 
+            fi['date'] = t + relativedelta(months=i)
+            res.append(fi)
+
+        return pd.DataFrame(res)
+
+def forecast(df, model, xcols, ycol, t, k=1, J=12, dyn=False):
+    # Build nowcaster
+    if dyn:
+        model = nowcaster(df, xcols, ycol, t - relativedelta(months=1), verbose=False)
+    index_forecasts = forecast_ma(df, xcols, t, k, J)
+    model_forecast = model.predict(sm.add_constant(index_forecasts[xcols]))
+    return pd.DataFrame({'date': index_forecasts['date'], 'forecast': model_forecast})
+

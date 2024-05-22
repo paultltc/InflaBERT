@@ -5,9 +5,9 @@ from functools import reduce
 def get_ticker(i):
     index2ticker = {
         "CPI": "CPIAUCSL",
-        "Core CPI": "CPILFESL",
-        "Food CPI": "CPIUFDSL",
-        "Gasoline CPI": "CUSR0000SETB01"
+        "CCPI": "CPILFESL",
+        "FCPI": "CPIUFDSL",
+        "GCPI": "CUSR0000SETB01"
     }
 
     return index2ticker.get(i, None)
