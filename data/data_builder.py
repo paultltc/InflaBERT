@@ -48,3 +48,9 @@ def alfred_dataset(indices):
     df = reduce(lambda x, y: x.merge(y, on='date'), dfs)
     return df
 
+
+def split_hf(dataset, split_ratio=0.1, seed=42):
+    split_idx = int(len(dataset) * split_ratio)
+    dataset = dataset.shuffle(seed=seed)
+    return {'train': dataset.select(range(split_idx, len(dataset))), 'eval': dataset.select(range(split_idx))}
+
