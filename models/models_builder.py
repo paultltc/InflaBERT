@@ -30,12 +30,13 @@ def asset_arima(df, asset, ar=0, i=0, ma=12, verbose=True):
     return model, model_res
 
 
-def nowcaster(df, xcols, ycol, t, tau=60, verbose=True):
+def nowcaster(df, xcols, ycol, train_range, tau=60, verbose=True):
     # Get the t-time index
-    t_idx = df[df.date == t].index.values[0]
+    #t_idx = df[df.date == t].index.values[0]
     
     # Get the rolling-Tau window
-    df = df.iloc[t_idx-tau:t_idx]
+    #df = df.iloc[t_idx-tau:t_idx]
+    df = df[df.date.isin(train_range)]
 
     # Get our response variable: CPI
     y = df[ycol]
@@ -80,11 +81,13 @@ def forecast_ma(df, indices, t, k=1, J=12, recursive=False):
 
         return pd.DataFrame(res)
 
-def forecast(df, model, xcols, ycol, t, k=1, J=12, dyn=False):
+def forecast(df, model, xcols, ycol, t, k=1, J=12, yearly=False, dyn=False):
     # Build nowcaster
     if dyn:
         model = nowcaster(df, xcols, ycol, t - relativedelta(months=1), verbose=False)
     index_forecasts = forecast_ma(df, xcols, t, k, J)
     model_forecast = model.predict(sm.add_constant(index_forecasts[xcols]))
+    if yearly:
+        model_forecast = (model_forecast + 1)**12 - 1
     return pd.DataFrame({'date': index_forecasts['date'], 'forecast': model_forecast})
 
