@@ -4,3 +4,5 @@
 /data/lexicon.json
 /data/merged_news.csv
 /data/glove.6B.100d.txt
+
+.env

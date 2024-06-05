@@ -1,6 +1,9 @@
+import os
 import pandas as pd
 import requests
 from functools import reduce
+
+ALFRED_API_KEY = os.environ['ALFRED_API_KEY']
 
 def get_alfred_ticker(i):
     index2ticker = {
@@ -12,17 +15,16 @@ def get_alfred_ticker(i):
 
     return index2ticker.get(i, None)
 
-def get_alfred(seid, api_key="5a44914abc36f51a44be01898453aa15"):
-    url = f"https://api.stlouisfed.org/fred/series/observations?series_id={seid}&api_key={api_key}&file_type=json"
+def get_alfred(seid):
+    url = f"https://api.stlouisfed.org/fred/series/observations?series_id={seid}&api_key={ALFRED_API_KEY}&file_type=json"
     response = requests.get(url).json()
     return response
 
-def get_alfred_data(index, seid, api_key="5a44914abc36f51a44be01898453aa15"):
+def get_alfred_data(index, seid):
     """Get (from Alfred) data and returns it as a DataFrame
 
     Args:
         seid (str): Series ID
-        api_key (str, optional): API KEY. Defaults to "5a44914abc36f51a44be01898453aa15".
 
     Returns:
         DataFrame: the time series
