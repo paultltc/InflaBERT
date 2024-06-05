@@ -4,14 +4,15 @@
 Code repository for the `FIN-407` course project. The report is available at [https://github.com/paultltc/InflaBERT/report.pdf](https://github.com/paultltc/InflaBERT/report.pdf).
 
 #### Abstract
-*Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Ut purus elit, vestibulum ut, placerat ac, adipiscing vitae, felis. Curabitur dictum gravida mauris. Nam arcu libero, nonummy eget, consectetuer id, vulputate a, magna. Donec vehicula augue eu neque. Pellentesque habitant morbi tristi que senectus et netus etmalesuada fames ac turpis egestas. Mauris ut leo. Cras viverra metus rhoncus sem. Nulla et lectus vestibulum urna fringilla ultrices. Phasellus eu tellus sit amet tortor gravida placerat. Integer sapien est, iaculis in, pretium quis, viverra ac, nunc. Praesent eget sem vel leo ultrices bibendum. Aenean faucibus. Morbi dolor nulla, malesuada eu, pulvinar at, mollis ac, nulla. Curabitur auctor semper nulla. Donec varius orci eget risus. Duis nibh mi, congue eu, accumsan eleifend, sagittis quis, diam. Duis eget orci sit amet orci dignissim rutrum.*
+*This study explores integrating large language models (LLMs) into classic inflation nowcasting frameworks, particularly in light of high inflation volatility periods such as the COVID-19 pandemic. We propose \texttt{InflaBERT}, a BERT-based LLM fine-tuned to predict inflation-related sentiment in news. We use this model to produce \texttt{NEWS}, an index capturing the monthly sentiment of the news regarding inflation. Incorporating our expectation index into the Cleveland Fed’s model, which is only based on macroeconomic autoregressive processes, shows a marginal improvement in nowcast accuracy during the pandemic. This highlights the potential of combining sentiment analysis with traditional economic indicators, suggesting further research to refine these methodologies for better real-time inflation monitoring.*
 
 #### Repository Description
 
-- `eda.ipynb`: EDA Notebook. 
-- `SA.ipynb`: ???
+- `news_eda.ipynb`: EDA Notebook. 
+- `inflabert.ipynb`: Notebook used to build the `InflaBERT` model.
 - `news.ipynb`: Notebook used to construct the `NEWS` index. Note that this notebook is designed to be run on **Google Colab**.
 - `nowcaster.ipynb`: Notebook used to derive results of the section *Inflation Nowcaster*.
+- `plots.ipynb`: Notebook used to derived most of the plots of the report.
 
 
 #### Code Requirements
