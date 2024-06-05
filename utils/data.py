@@ -3,8 +3,6 @@ import pandas as pd
 import requests
 from functools import reduce
 
-ALFRED_API_KEY = os.environ['ALFRED_API_KEY']
-
 def get_alfred_ticker(i):
     index2ticker = {
         "CPI": "CPIAUCSL",
@@ -15,12 +13,14 @@ def get_alfred_ticker(i):
 
     return index2ticker.get(i, None)
 
-def get_alfred(seid):
-    url = f"https://api.stlouisfed.org/fred/series/observations?series_id={seid}&api_key={ALFRED_API_KEY}&file_type=json"
+def get_alfred(seid, api_key='env'):
+    if api_key == 'env':
+        api_key = os.environ['ALFRED_API_KEY']
+    url = f"https://api.stlouisfed.org/fred/series/observations?series_id={seid}&api_key={api_key}&file_type=json"
     response = requests.get(url).json()
     return response
 
-def get_alfred_data(index, seid):
+def get_alfred_data(index, seid, api_key='env'):
     """Get (from Alfred) data and returns it as a DataFrame
 
     Args:
@@ -30,7 +30,7 @@ def get_alfred_data(index, seid):
         DataFrame: the time series
     """
     # Get Request
-    response = get_alfred(seid)
+    response = get_alfred(seid, api_key)
 
     # Only keep the observations part
     data = response['observations']
@@ -45,14 +45,7 @@ def get_alfred_data(index, seid):
 
     return df
 
-def alfred_dataset(indices):
-    dfs = [get_alfred_data(i, get_alfred_ticker(i)) for i in indices]
+def alfred_dataset(indices, api_key='env'):
+    dfs = [get_alfred_data(i, get_alfred_ticker(i), api_key) for i in indices]
     df = reduce(lambda x, y: x.merge(y, on='date'), dfs)
     return df
-
-
-def split_hf(dataset, split_ratio=0.1, seed=42):
-    split_idx = int(len(dataset) * split_ratio)
-    dataset = dataset.shuffle(seed=seed)
-    return {'train': dataset.select(range(split_idx, len(dataset))), 'eval': dataset.select(range(split_idx))}
-

@@ -12,3 +12,7 @@ Code repository for the `FIN-407` course project. The report is available at [ht
 - `SA.ipynb`: ???
 - `news.ipynb`: Notebook used to construct the `NEWS` index. Note that this notebook is designed to be run on **Google Colab**.
 - `nowcaster.ipynb`: Notebook used to derive results of the section *Inflation Nowcaster*.
+
+
+#### Code Requirements
+This code repository uses the [ALFRED Database](https://alfred.stlouisfed.org/). To have access to it, you will need an API key.
