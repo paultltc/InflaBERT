@@ -2,7 +2,7 @@ import pandas as pd
 import requests
 from functools import reduce
 
-def get_ticker(i):
+def get_alfred_ticker(i):
     index2ticker = {
         "CPI": "CPIAUCSL",
         "CCPI": "CPILFESL",
@@ -44,7 +44,7 @@ def get_alfred_data(index, seid, api_key="5a44914abc36f51a44be01898453aa15"):
     return df
 
 def alfred_dataset(indices):
-    dfs = [get_alfred_data(i, get_ticker(i)) for i in indices]
+    dfs = [get_alfred_data(i, get_alfred_ticker(i)) for i in indices]
     df = reduce(lambda x, y: x.merge(y, on='date'), dfs)
     return df
 
