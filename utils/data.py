@@ -3,6 +3,11 @@ import pandas as pd
 import requests
 from functools import reduce
 
+from datetime import datetime
+import pandas_datareader.data as web
+from pytrends.request import TrendReq
+
+# ---------------------------------- ALFRED ---------------------------------- #
 def get_alfred_ticker(i):
     index2ticker = {
         "CPI": "CPIAUCSL",
@@ -49,3 +54,13 @@ def alfred_dataset(indices, api_key='env'):
     dfs = [get_alfred_data(i, get_alfred_ticker(i), api_key) for i in indices]
     df = reduce(lambda x, y: x.merge(y, on='date'), dfs)
     return df
+
+
+# ---------------------------------- GTrends --------------------------------- #
+def gtrend_dataset(keywords, start_date='2010-01-01', end_date=None):
+    pytrends = TrendReq(hl='en-US', tz=360)  # hl is the host language for the API, tz is the time zone offset
+    end_date = datetime.now().strftime('%Y-%m-%d') if end_date == None else end_date
+    timeframe = f'{start_date} {end_date}'
+    pytrends.build_payload(kw_list=keywords, timeframe=timeframe)
+    data = pytrends.interest_over_time()[keywords].reset_index()
+    return data
